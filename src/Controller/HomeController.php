@@ -2,22 +2,33 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use Doctrine\ORM\Mapping\Cache;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Entity\Book;
 
-class HomeController extends Controller
+use App\Entity\User;
+use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+class HomeController extends AbstractController
 {
     /**
-     * @Route("/", name="blog_index")
-     * @Method("GET")
+     * @Route("/", name="index")
+     *
      */
     public function indexAction()
     {
-        $articles = $this->getDoctrine()->getRepository(User::class)->findAll();
-        return $this->render('blog/index.html.twig', ['users' => $articles]);
+        $user = $this->getDoctrine()->getRepository(User::class)->find(1);
+        $books = $this->getDoctrine()->getRepository(Book::class)->findAll();
+
+        foreach ($books as $book){
+            /** @var Book $book */
+            $usersCollecion = $book->getUsers();
+            if ($usersCollecion->contains($user)){
+                $book->setInPrivateCollection();
+            }
+        }
+
+        return $this->render('index.html.twig', ['books' => $books]);
+
     }
 }
