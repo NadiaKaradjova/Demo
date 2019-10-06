@@ -1,0 +1,33 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/"><img class="logo" src="{{ asset('images/title2.svg')}}"></a>
+            <a class="navbar-brand" href="{{ path('book_create') }}">Add new book</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if app.getUser()%}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{app.getUser().username}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{path('user_profile')}}">Edit profile</a></li>
+                            <li><a href="{{path('change_password')}}">Change password</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{{ path('my_book_collection')}}">My books</a></li>
+                    <li><a href="{{ path('app_logout') }}"><span class="glyphicon glyphicon-log-out"
+                                                                 aria-hidden="true"></span></a></li>
+
+                {% else %}
+                    <li><a href="{{ path('user_register') }}">Register</a></li>
+                    <li><a href="{{ path('app_login') }}">LogIn</a></li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

@@ -30,6 +30,7 @@
                         <label class="col-sm-4 control-label" for="user_email">Email</label>
                         <div class="col-sm-4 ">
                             <input class="form-control" id="user_email" placeholder="Email" name="user[email]" required type="email">
+                            <small class="form-error">{{ form_errors(form.email) }}</small>
                         </div>
                     </div>
 
@@ -37,12 +38,14 @@
                         <label class="col-sm-4 control-label" for="user_password_first">Password</label>
                         <div class="col-sm-4">
                             <input type="password" class="form-control" id="user_password_first" placeholder="Password" name="user[password][first]" required>
+
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-4 control-label" for="user_password_second">Confirm Password</label>
                         <div class="col-sm-4">
                             <input type="password" class="form-control" id="user_password_second" placeholder="Password" name="user[password][second]" required>
+                            <small class="form-error">{{ form_errors(form.password['first']) }}</small>
                         </div>
                     </div>
                     <div class="form-group">

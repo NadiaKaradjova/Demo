@@ -1,33 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-    <div class="container body-content">
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
         <div class="row">
             <div class="col-md-12">
+                <h2>{{ book.name }}</h2>
+            </div>
+            <div class="col-md-2">
+                <img class="coverImage" src="{{ (asset(book.coverImage.path))}}">
+            </div>
+
+            <div class="col-md-10">
                 <article>
-                    <header>
-                        <h2>{{ article.title }}</h2>
-                    </header>
-
                     <p>
-                        {{ article.content }}
+                        ISBN: {{ book.isbn }}
+                    </p
+                    ><p>
+                        Year of publishing: {{ book.year }}
                     </p>
-
-                    <small class="author">Created by
-                        {{ article.author }}
-                    </small>
-
+                    <p>
+                        {{ book.description }}
+                    </p>
                     <footer>
                         <div class="pull-right">
-                            {% if app.getUser() and (app.getUser().isAuthor(article) or app.getUser().isAdmin()) %}
-                            <a class="btn btn-success btn-xs" href="{{ path('article_edit', {'id' : article.id}) }}">Edit &raquo;</a>
-                            <a class="btn btn-danger btn-xs" href="{{ path('article_delete', {'id' : article.id}) }}">Delete &raquo;</a>
+                            {% if app.getUser() %}
+                            <a class="btn btn-success" href="{{ path('book_edit', {'id' : book.id}) }}">Edit &raquo;</a>
+                            <a class="btn btn-danger" href="{{ path('book_delete', {'id' : book.id}) }}">Delete &raquo;</a>
                             {% endif %}
-                            <a class="btn btn-default btn-xs" href="{{ path('blog_index') }}">back &raquo;</a>
+                            <a class="btn btn-default" href="{{ path('index') }}">back &raquo;</a>
                         </div>
                     </footer>
                 </article>
             </div>
+        </div>
         </div>
     </div>
 {% endblock %}

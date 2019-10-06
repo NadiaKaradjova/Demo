@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'profile' %}
+
+{% block main %}
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+            <fieldset>
+                {% include('form/message_box.html.twig') %}
+                <legend>Profile</legend>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>First Name:</td>
+                        <td>{{ user.firstName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Last name:</td>
+                        <td>{{ user.lastName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Username:</td>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email:</td>
+                        <td> {{ user.email }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                {#                    {{ form_row(form._token) }}#}
+                <div class="form-group">
+                    <div class="col-sm-12 ">
+                        <a class="btn btn-primary" href="{{ path('index') }}">Go to home page</a>
+                        <a class="btn btn-primary" href="{{ path('my_book_collection') }}">Go to my collection</a>
+                    </div>
+                </div>
+
+            </fieldset>
+
+        </div>
+    </div>
+{% endblock %}

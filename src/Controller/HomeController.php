@@ -17,17 +17,18 @@ class HomeController extends AbstractController
      */
     public function indexAction()
     {
-        $user = $this->getDoctrine()->getRepository(User::class)->find(1);
         $books = $this->getDoctrine()->getRepository(Book::class)->findAll();
 
-        foreach ($books as $book){
-            /** @var Book $book */
-            $usersCollecion = $book->getUsers();
-            if ($usersCollecion->contains($user)){
-                $book->setInPrivateCollection();
+        $user = $this->getUser();
+        if ($user){
+            foreach ($books as $book){
+                /** @var Book $book */
+                $usersCollecion = $book->getUsers();
+                if ($usersCollecion->contains($user)){
+                    $book->setInPrivateCollection();
+                }
             }
         }
-
         return $this->render('index.html.twig', ['books' => $books]);
 
     }

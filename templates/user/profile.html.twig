@@ -3,9 +3,48 @@
 {% block body_id 'profile' %}
 
 {% block main %}
-    <div>
-        {{ user.email }}
-        <br>
-        {{ user.fullName }}
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+            {% include('form/message_box.html.twig') %}
+            <form class="form-horizontal" action="{{ path('user_profile') }}" method="POST">
+                <fieldset>
+                    <legend>Edit profile</legend>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="user_firstName">First Name</label>
+                        <div class="col-sm-4 ">
+                            <input type="text" class="form-control" id="user_firstName" placeholder="First Name" name="user[firstName]" value="{{ user.firstName }}"required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="user_lastName">Last Name</label>
+                        <div class="col-sm-4 ">
+                            <input type="text" class="form-control" id="user_lastName" placeholder="Last Name" name="user[lastName]" value="{{user.lastName}}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="user_username">Username</label>
+                        <div class="col-sm-4 ">
+                            <input type="text" class="form-control" id="user_username" placeholder="Username" name="user[username]"  value="{{user.username}}" required>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="user_email">Email</label>
+                        <div class="col-sm-4 ">
+                            <input class="form-control" id="user_email" placeholder="Email" name="user[email]" type="email" value="{{user.email}}" required>
+
+                        </div>
+                    </div>
+                    {{ form_row(form._token) }}
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <a class="btn btn-default" href="">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+
+                </fieldset>>
+            </form>
+        </div>
     </div>
 {% endblock %}

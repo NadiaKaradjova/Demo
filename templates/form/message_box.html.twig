@@ -1,0 +1,9 @@
+{% for label, flashes in app.session.flashbag.all %}
+    <div id="messagebox" class="{{ label == 'success' ? 'message' : 'error' }} ">
+        <ul>
+            {% for flash in flashes %}
+                <li>{{ flash }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}

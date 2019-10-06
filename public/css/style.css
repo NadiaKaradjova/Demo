@@ -1,0 +1,41 @@
+/* messagebox */
+#messagebox {
+    color: #000;
+    margin: 20px 0;
+    display: inline-block;
+    border: 1px solid #307c24;
+    background: url(../images/success.png) 10px 5px no-repeat;
+    background-size: 20px;
+
+}
+
+#messagebox.error {
+    border: 1px solid red;
+}
+
+#messagebox ul {
+    margin: 5px 10px 5px 5px;
+    list-style-type: none;
+}
+
+.form-error{
+    color: #dc3545;
+}
+
+.badge {
+    background-color: #dc3545;
+    font-size: 9px;
+}
+
+.tumb{
+    width: 100px;
+}
+
+.coverImage{
+     width: 100%;
+ }
+
+.logo{
+    height: 100%;
+}
+

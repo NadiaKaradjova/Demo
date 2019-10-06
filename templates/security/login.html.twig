@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block main %}
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+
+            <form class="form-horizontal" method="post">
+                <fieldset>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <legend class="h3 mb-3 font-weight-normal">Please sign in</legend>
+                <div class="form-group">
+                    <label for="inputEmail" class="col-sm-4 control-label">Email</label>
+                    <div class="col-sm-4">
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                               class="form-control"
+                               placeholder="Email" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-4 control-label">Password</label>
+                    <div class="col-sm-4">
+                    <input type="password" name="password" id="inputPassword" class="form-control"
+                           placeholder="Password"
+                           required>
+                        </div>
+                </div>
+
+                <input type="hidden" name="_csrf_token"
+                       value="{{ csrf_token('authenticate') }}">
+
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <a class="btn btn-default" href="">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

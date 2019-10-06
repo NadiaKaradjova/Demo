@@ -3,14 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\Cover;
+use App\Entity\User;
 use App\Form\BookType;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class BookController extends AbstractController
@@ -21,20 +27,42 @@ class BookController extends AbstractController
      * @Route("/book/create", name="book_create")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
-    public function createBook(Request $request, FileUploader $fileUploader): Response
+    public function createBook(Request $request, ValidatorInterface $validator): Response
     {
         $book = new Book();
         $form = $this->createForm(BookType::class, $book);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        //$errors = $validator->validate($book);
 
-            $cover = $form['coverImage']->getData();
-            if ($cover) {
-                $coverFileName = $fileUploader->upload($cover);
-                $book->setCoverImage($coverFileName);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($file = $request->files->get('coverImage')) {
+                try {
+                    $mimeTypes = ["image/gif", "image/png", "image/jpeg", "image/bmp"];
+                    if (in_array($file->getMimeType(), $mimeTypes)) {
+                        $cover = new Cover();
+                        $cover->setFile($request->files->get('coverImage'));
+                        $this->getDoctrine()->getManager()->persist($cover);
+                        $this->getDoctrine()->getManager()->flush();
+
+                        $book->setCoverImage($cover);
+                    } else {
+//
+                    }
+
+                } catch (BadRequestHttpException $exception) {
+//                    $errorResponse = array(
+//                        'property_path' => 'image',
+//                        'message' => $exception->getMessage()
+//                    )];
+//
+//                    $errors = iterator_to_array($errors);
+//                    $errors[] = $errorResponse;
+                }
             }
+
 
             $this->getDoctrine()->getManager()->persist($book);
             $this->getDoctrine()->getManager()->flush();
@@ -50,38 +78,57 @@ class BookController extends AbstractController
      * @param $id
      * @return Response
      */
-    public function viewArticle($id)
+    public function viewBook($id)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
         return $this->render('book/book.html.twig', ['book' => $book]);
     }
 
     /**
-     * @Route("book/edit/{id}", name="article_edit")
+     * @Route("book/edit/{id}", name="book_edit")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      *
      * @param $id
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editArticle($id, Request $request)
+    public function editBook($id, Request $request)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
-        if ($book === null){
-            return $this->redirectToRoute("blog_index");
-        }
 
-        $currentUser = $this->getUser();
-
-        if (!$currentUser->isAuthor($book) && !$currentUser->isAdmin()){
+        if ($book === null) {
             return $this->redirectToRoute("index");
         }
 
         $form = $this->createForm(BookType::class, $book);
 
         $form->handleRequest(($request));
+        //$errors = $validator->validate($book);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($file = $request->files->get('coverImage')) {
+                try {
+                    $mimeTypes = ["image/gif", "image/png", "image/jpeg", "image/bmp"];
+                    if (in_array($file->getMimeType(), $mimeTypes)) {
+
+                        /** @var Cover $cover */
+                        $cover = $book->getCoverImage();
+
+                        $cover->setFile($request->files->get('coverImage'));
+                        $this->getDoctrine()->getManager()->persist($cover);
+                        $this->getDoctrine()->getManager()->flush();
+
+                        $book->setCoverImage($cover);
+                    } else {
+
+                    }
+
+                } catch (BadRequestHttpException $exception) {
+                    dump($exception->getMessage());
+                }
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($book);
             $em->flush();
@@ -91,6 +138,7 @@ class BookController extends AbstractController
 
         return $this->render('book/edit.html.twig', array('book' => $book, 'form' => $form->createView()));
     }
+
 
     /**
      *
@@ -104,20 +152,23 @@ class BookController extends AbstractController
     public function delete($id, Request $request)
     {
         $book = $this->getDoctrine()->getRepository(Book::class)->find($id);
-        if ($book === null){
+
+        if ($book === null) {
             return $this->redirectToRoute("index");
         }
 
-        $currentUser = $this->getUser();
-        if (!$currentUser->isAuthor($book) && !$currentUser->isAdmin()){
-            return $this->redirectToRoute("index");
-        }
 
-        $form = $this->createForm(BookType::class, $book);
+        $defaultData = ['message' => 'Are you sure?'];
+
+        $form = $this->createFormBuilder($defaultData)
+            ->add('send', SubmitType::class)
+            ->getForm();
 
         $form->handleRequest(($request));
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+
             $em = $this->getDoctrine()->getManager();
             $em->remove($book);
             $em->flush();
@@ -127,4 +178,69 @@ class BookController extends AbstractController
 
         return $this->render('book/delete.html.twig', array('book' => $book, 'form' => $form->createView()));
     }
+
+    /**
+     *
+     * @Route("mybooks", name="my_book_collection")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+    public function getUserBookCollection()
+    {
+        $user = $this->getUser();
+        /** @var User $user */
+        $books = $user->getBookCollection();
+        return $this->render('book/my_collection.html.twig', ['books' => $books, "collection" => true]);
+    }
+
+    /**
+     *
+     * @Route("add", name="add_book")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+    public function addBookToUserCollection(Request $request)
+    {
+        $bookId = $request->query->get('bookId');
+
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($bookId);
+        $user = $this->getUser();
+        /** @var User $user */
+        /** @var Book $book */
+        $user->addBookCollection($book);
+        $book->addUsers($user);
+        $this->getDoctrine()->getManager()->persist($user);
+        $this->getDoctrine()->getManager()->persist($book);
+        $this->getDoctrine()->getManager()->flush();
+
+        $books = $this->getDoctrine()->getRepository(Book::class)->findAll();
+
+        return $this->redirectToRoute('index');
+    }
+
+    /**
+     *
+     * @Route("remove", name="remove_book")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+    public function removeBookFromUserCollection(Request $request)
+    {
+        $bookId = $request->query->get('bookId');
+
+        $book = $this->getDoctrine()->getRepository(Book::class)->find($bookId);
+        $user = $this->getUser();
+        /** @var User $user */
+        /** @var Book $book */
+        $user->removeBookCollection($book);
+        $book->removeUsers($user);
+        $this->getDoctrine()->getManager()->persist($user);
+        $this->getDoctrine()->getManager()->persist($book);
+        $this->getDoctrine()->getManager()->flush();
+
+        //$books = $this->getDoctrine()->getRepository(Book::class)->findAll();
+        if ($request->query->get('collection')) {
+            return $this->redirectToRoute('my_book_collection');
+        }
+        return $this->redirectToRoute('index');
+    }
+
+
 }

@@ -1,0 +1,45 @@
+
+<table class="table">
+    <thead>
+    <th style="width: 10%">Cover</th>
+    <th style="width: 20%">Title</th>
+    <th style="width: 10%">ISBN</th>
+    <th style="width: 5%">Year</th>
+    <th style="width: 40%">Description</th>
+    <th style="width: 12%"></th>
+    </thead>
+
+    <tbody>
+    {% for book in books %}
+        <tr>
+            <td>
+                <img class="tumb" src="{{ (asset(book.coverImage.path))}}">
+            </td>
+
+            <td><a href="{{ path('book_view', {'id': book.id}) }}">{{ book.name }}</a></td>
+
+            <td>{{ book.ISBN }}</td>
+            <td>{{ book.year }}</td>
+            <td> {{ book.description|length > 200 ? book.description|slice(0, 200) ~ '...' : book.description }}</td>
+
+            <td>
+                {% if collection is defined %}
+                    <a type="button" class="btn btn-danger" href="{{ path('remove_book', {bookId: book.id, collection: true}) }}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from my book
+                    </a>
+                {% else %}
+                {% if book.inPrivateCollection %}
+                    <a type="button" class="btn btn-danger" href="{{ path('remove_book', {bookId: book.id}) }}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove from my book
+                    </a>
+                {% else %}
+                    <a type="button" class="btn btn-primary" href="{{ path('add_book', {bookId: book.id}) }}">
+                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Add to my books</a>
+                {% endif %}
+                    {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+
+    </tbody>
+</table>

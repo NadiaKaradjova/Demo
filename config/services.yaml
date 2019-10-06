@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 
 parameters:
-    cover_images: '%kernel.project_dir%/public/uploads'
+    cover_images: '/public/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -25,9 +25,9 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\Service\FileUploader:
-        arguments:
-            $targetDirectory: '%cover_images%'
+#    App\Service\FileUploader:
+#        arguments:
+#            $targetDirectory: '%cover_images%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
