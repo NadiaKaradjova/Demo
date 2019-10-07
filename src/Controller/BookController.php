@@ -49,17 +49,13 @@ class BookController extends AbstractController
 
                         $book->setCoverImage($cover);
                     } else {
-//
+                        $this->addFlash('error', "This type of file is not supported. Please upload a valid picture - .jpg, .png, .bmp or .gif");
+                        return $this->render('book/create.html.twig', array('form' => $form->createView()));
                     }
 
                 } catch (BadRequestHttpException $exception) {
-//                    $errorResponse = array(
-//                        'property_path' => 'image',
-//                        'message' => $exception->getMessage()
-//                    )];
-//
-//                    $errors = iterator_to_array($errors);
-//                    $errors[] = $errorResponse;
+                    $this->addFlash('error', "This type of file is not supported. Please upload a valid picture - .jpg, .png, .bmp or .gif");
+                   return $this->render('book/create.html.twig', array('form' => $form->createView()));
                 }
             }
 

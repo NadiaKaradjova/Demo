@@ -3,7 +3,7 @@
 {% block main %}
     <div class="container body-content span=8 offset=2">
         <div class="well">
-
+            {% include('form/message_box.html.twig') %}
             <form class="form-horizontal" action="{{ path('book_create') }}" method="POST" enctype="multipart/form-data">
                 <fieldset>
                     <legend>Add New Book</legend>
@@ -42,7 +42,7 @@
                             <input type="file" class="form-control" id="book_coverImage"
                                    name="coverImage">
                         </div>
-{#                        <small class="form-error">{{ form_errors(form.coverImage) }}</small>#}
+                        {#<small class="form-error">{{ form_errors(form.coverImage) }}</small>#}
 
                     </div>
 

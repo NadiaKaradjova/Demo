@@ -10,7 +10,9 @@
 }
 
 #messagebox.error {
+    background: #e1e1e1 url(../images/icon_error.png) 10px 5px no-repeat;
     border: 1px solid red;
+    background-size: 20px;
 }
 
 #messagebox ul {
