@@ -148,6 +148,4 @@ class UserController extends AbstractController
         // Add flash message
         $flashbag->add($type, $message);
     }
-
-
 }

@@ -27,14 +27,12 @@ class BookController extends AbstractController
      * @Route("/book/create", name="book_create")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
-    public function createBook(Request $request, ValidatorInterface $validator): Response
+    public function createBook(Request $request): Response
     {
         $book = new Book();
         $form = $this->createForm(BookType::class, $book);
 
         $form->handleRequest($request);
-
-        //$errors = $validator->validate($book);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -58,7 +56,6 @@ class BookController extends AbstractController
                    return $this->render('book/create.html.twig', array('form' => $form->createView()));
                 }
             }
-
 
             $this->getDoctrine()->getManager()->persist($book);
             $this->getDoctrine()->getManager()->flush();
@@ -99,7 +96,6 @@ class BookController extends AbstractController
         $form = $this->createForm(BookType::class, $book);
 
         $form->handleRequest(($request));
-        //$errors = $validator->validate($book);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -117,11 +113,13 @@ class BookController extends AbstractController
 
                         $book->setCoverImage($cover);
                     } else {
-
+                        $this->addFlash('error', "This type of file is not supported. Please upload a valid picture - .jpg, .png, .bmp or .gif");
+                        return $this->render('book/edit.html.twig', array('book' => $book, 'form' => $form->createView()));
                     }
 
                 } catch (BadRequestHttpException $exception) {
-                    dump($exception->getMessage());
+                    $this->addFlash('error', "This type of file is not supported. Please upload a valid picture - .jpg, .png, .bmp or .gif");
+                    return $this->render('book/edit.html.twig', array('book' => $book, 'form' => $form->createView()));
                 }
             }
 
@@ -153,8 +151,7 @@ class BookController extends AbstractController
             return $this->redirectToRoute("index");
         }
 
-
-        $defaultData = ['message' => 'Are you sure?'];
+        $defaultData = ['message' => ''];
 
         $form = $this->createFormBuilder($defaultData)
             ->add('send', SubmitType::class)
@@ -207,8 +204,6 @@ class BookController extends AbstractController
         $this->getDoctrine()->getManager()->persist($book);
         $this->getDoctrine()->getManager()->flush();
 
-        $books = $this->getDoctrine()->getRepository(Book::class)->findAll();
-
         return $this->redirectToRoute('index');
     }
 
@@ -231,7 +226,6 @@ class BookController extends AbstractController
         $this->getDoctrine()->getManager()->persist($book);
         $this->getDoctrine()->getManager()->flush();
 
-        //$books = $this->getDoctrine()->getRepository(Book::class)->findAll();
         if ($request->query->get('collection')) {
             return $this->redirectToRoute('my_book_collection');
         }

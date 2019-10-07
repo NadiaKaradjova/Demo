@@ -61,8 +61,6 @@ class Cover implements \Serializable
     private $updatedAt;
 
 
-   // private $book;
-
     public function getId(): ?int
     {
         return $this->id;

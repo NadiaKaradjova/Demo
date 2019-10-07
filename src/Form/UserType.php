@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 
 class UserType extends AbstractType
@@ -16,10 +17,26 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('firstName', TextType::class)
-            ->add('lastName', TextType::class)
-            ->add('username', TextType::class)
-            ->add('email', EmailType::class)
+            ->add('firstName', TextType::class, [
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ])
+            ->add('lastName', TextType::class, [
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ])
+            ->add('username', TextType::class, [
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ])
+            ->add('email', EmailType::class, [
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ])
             ->add('password', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'invalid_message' => 'The password fields must match.',
