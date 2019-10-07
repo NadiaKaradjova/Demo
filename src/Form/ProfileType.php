@@ -25,6 +25,7 @@ class ProfileType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => User::class,
+            'csrf_protection' => true,
             'allow_extra_fields' => true,
             'error_bubbling' => true,
         ));

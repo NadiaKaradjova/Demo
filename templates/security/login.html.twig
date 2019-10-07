@@ -5,7 +5,7 @@
 {% block main %}
     <div class="container body-content span=8 offset=2">
         <div class="well">
-
+            {% include('form/message_box.html.twig') %}
             <form class="form-horizontal" method="post">
                 <fieldset>
                 {% if error %}

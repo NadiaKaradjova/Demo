@@ -100,11 +100,12 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $passwordFirst = $data['user']['password']['first'];
-//            $passwordSecond = $data['user']['password']['second'];
-//
-//            if ($passwordFirst !== $passwordSecond){
-//                return $this->render("user/password.html.twig", ['user'=>$user, 'form' => $form->createView()]);
-//            }
+            $passwordSecond = $data['user']['password']['second'];
+
+            if ($passwordFirst !== $passwordSecond){
+                $this->addFlash('error', "Password change failed. The password fields must match. Login again and try again!");
+                return $this->redirectToRoute("app_login");
+            }
             $password = $this->passwordEncoder->encodePassword(
                 $user,
                 $passwordFirst
